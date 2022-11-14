@@ -1,0 +1,60 @@
+service: lunch-recommendation
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-local-schedule
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: ap-northeast-2
+  environment:
+    MY_AWS_ACCESS_KEY_ID: ${env:AWS_ACCESS_KEY_ID}
+    MY_AWS_SECRET_ACCESS_KEY: ${env:AWS_SECRET_ACCESS_KEY}
+
+functions:
+  auth:
+    handler: src/auth.main
+    events:
+      - http:
+          path: /auth
+          method: post
+          cors: true
+  add:
+    handler: src/add.main
+    events:
+      - http:
+          path: /add
+          method: post
+          cors: true
+  get:
+    handler: src/get.main
+    events:
+      - http:
+          path: /get
+          method: post
+          cors: true
+  delete:
+    handler: src/delete.main
+    events:
+      - http:
+          path: /delete
+          method: post
+          cors: true
+  recommend:
+    handler: src/recommend.main
+    events:
+      - http:
+          path: /recommend
+          method: post
+          cors: true
+  recommend-cron:
+    handler: src/recommend-cron.main
+    events:
+      - schedule: 
+          rate : cron(50 11 ? * TUE-SAT *)
+          timezone: Asia/Seoul
